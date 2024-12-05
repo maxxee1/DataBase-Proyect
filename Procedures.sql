@@ -26,3 +26,5 @@ BEGIN
     END IF;
 END;
 $$;
+
+CREATE OR REPLACE
