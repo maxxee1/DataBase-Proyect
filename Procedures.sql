@@ -32,7 +32,6 @@ BEGIN
         FROM Caja
         WHERE id_caja = f_id_caja
     ) THEN
-
         RAISE EXCEPTION 'La caja con ID % no existe.', f_id_caja;
     END IF;
 
@@ -125,14 +124,9 @@ BEGIN
         RAISE EXCEPTION 'El usuario con ID % no existe.', p_id_user;
     END IF;
 
-    SELECT SUM(horas_activas) INTO horas_totales
+    SELECT COALESCE(SUM(horas_activas),0) INTO horas_totales
     FROM User_Caja
     WHERE id_user = p_id_user;
-
- 
-    IF horas_totales IS NULL THEN
-        RETURN 0;
-    END IF;
 
     RETURN horas_totales;
 END;
@@ -140,20 +134,20 @@ $$;
 
 --evento mas efectivo
 CREATE OR REPLACE FUNCTION ObtenerEventoConMasJugadoresNuevos()
-RETURNS TABLE(id_evento INT, jugadores_nuevos INT)
+RETURNS TABLE(id_evento INT, jugadores_nuevos BIGINT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY
-    SELECT Eventos.id_evento, COUNT(uc.id_user) AS jugadores_nuevos
-    FROM User_Caja uc
-    JOIN Eventos e ON uc.id_user = e.id_user
-    WHERE uc.horas_activas = (SELECT MIN(horas_activas) FROM User_Caja)
-    GROUP BY e.id_evento
-    ORDER BY jugadores_nuevos DESC
-    LIMIT 1;
+    SELECT Eventos.id_evento, COUNT(User_Caja.id_user) AS jugadores_nuevos
+    FROM User_Caja
+    JOIN Eventos ON User_Caja.id_user = Eventos.id_user
+    WHERE User_Caja.horas_activas < 24
+    GROUP BY Eventos.id_evento
+    ORDER BY jugadores_nuevos DESC;
 END;
 $$;
+
 
 
 /* -------------------- Informacion Juego -------------------- */
@@ -279,4 +273,4 @@ BEGIN
 END;
 $$;
 
-/* -------------------- Informacion Juego -------------------- */
+/* -------------------- Modificaciones -------------------- */
