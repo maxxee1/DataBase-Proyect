@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap');
+
+body {
+  font-family: 'SUSE', sans-serif;
+}
+
+.card-img-top {
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.card {
+  border-radius: 15px;
+}
+
+.price {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.offer-price {
+  color: #d9534f;
+  font-weight: bold;
+}
+
+.original-price {
+  color: #6c757d;
+  text-decoration: line-through;
+  font-size: 1rem;
+}
+
+.product-id {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.btn-primary {
+  background-color: #333;
+  border-color: #333;
+}
+
+.btn-primary:hover {
+  background-color: #555;
+  border-color: #555;
+}
