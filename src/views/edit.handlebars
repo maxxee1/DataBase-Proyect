@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestionar Usuario y Evento</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+  <!-- Boton para ir al inicio -->
+  <div class="text-center mt-6">
+    <a href="/"
+      class="px-6 py-3 bg-red-400 text-white rounded-lg hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+      Volver al Inicio
+    </a>
+  </div>
+
+  <div class="container mx-auto p-6">
+
+    <!-- Recuadro para editar nombre -->
+    <div class="bg-white p-8 rounded-lg shadow-lg mb-6">
+      <h1 class="text-3xl font-bold text-center text-red-400">Editar Nombre de Usuario</h1>
+
+      <form action="/edit" method="get" class="space-y-4">
+        <div>
+          <label for="id_crupier" class="block text-lg font-semibold text-gray-700">ID del Usuario</label>
+          <input type="text" id="id_User" name="id_User"
+            class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <div>
+          <label for="nuevoNombre" class="block text-lg font-semibold text-gray-700">Nuevo Nombre</label>
+          <input type="text" id="nuevoNombre" name="nuevoNombre"
+            class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-red-400 text-white p-3 rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          Actualizar Nombre
+        </button>
+      </form>
+    </div>
+
+    <!-- Recuadro para agregar un nuevo usuario -->
+    <div class="bg-white p-8 rounded-lg shadow-lg mb-6">
+      <h1 class="text-3xl font-bold text-center text-red-400">Agregar Nuevo Usuario</h1>
+
+      <form action="/nuevoUsuario" method="get" class="space-y-4">
+        <div>
+          <label for="id_user" class="block text-lg font-semibold text-gray-700">ID del Usuario</label>
+          <input type="text" id="id_user" name="id_user"
+            class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <div>
+          <label for="nombre" class="block text-lg font-semibold text-gray-700">Nombre del Usuario</label>
+          <input type="text" id="nombre" name="nombre"
+            class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <div>
+          <label for="email" class="block text-lg font-semibold text-gray-700">Email del Usuario</label>
+          <input type="email" id="email" name="email"
+            class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <div>
+          <label for="cantidad_dinero" class="block text-lg font-semibold text-gray-700">Cantidad de Dinero</label>
+          <input type="number" step="0.01" id="cantidad_dinero" name="cantidad_dinero"
+            class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-red-400 text-white p-3 rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          Agregar Usuario
+        </button>
+      </form>
+    </div>
+
+    <!-- Recuadro para agregar un nuevo evento -->
+    <div class="bg-white p-8 rounded-lg shadow-lg mb-6">
+      <h1 class="text-3xl font-bold text-center text-red-400">Agregar Evento</h1>
+    
+      <form action="/agregarEvento" method="get" class="space-y-4">
+        <div>
+          <label for="id_evento" class="block text-lg font-semibold text-gray-700">ID del Evento</label>
+          <input type="number" id="id_evento" name="id_evento"
+            class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+    
+        <div>
+          <label for="nombre_evento" class="block text-lg font-semibold text-gray-700">Nombre del Evento</label>
+          <input type="text" id="nombre_evento" name="nombre_evento"
+            class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+    
+        <div>
+          <label for="fecha_evento" class="block text-lg font-semibold text-gray-700">Fecha del Evento</label>
+          <input type="datetime-local" id="fecha_evento" name="fecha_evento"
+            class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+    
+        <div>
+          <label for="id_sala" class="block text-lg font-semibold text-gray-700">ID de la Sala</label>
+          <input type="number" id="id_sala" name="id_sala"
+            class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+    
+        <div>
+          <label for="id_crupier" class="block text-lg font-semibold text-gray-700">ID del Crupier</label>
+          <input type="number" id="id_crupier" name="id_crupier"
+            class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
+        </div>
+    
+        <button type="submit"
+          class="w-full bg-red-400 text-white p-3 rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          Agregar Evento
+        </button>
+      </form>
+    </div>
+
+
+  <!-- Recuadro para cambiar la fecha del evento -->
+  <div class="bg-white p-8 rounded-lg shadow-lg mb-6">
+    <h1 class="text-3xl font-bold text-center text-red-400">Cambiar Fecha del Evento</h1>
+  
+    <form action="/cambiarFechaEvento" method="get" class="space-y-4">
+      <div>
+        <label for="id_evento" class="block text-lg font-semibold text-gray-700">ID del Evento</label>
+        <input type="number" id="id_evento" name="id_evento"
+          class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
+      </div>
+  
+      <div>
+        <label for="nueva_fecha" class="block text-lg font-semibold text-gray-700">Nueva Fecha del Evento</label>
+        <input type="datetime-local" id="nueva_fecha" name="nueva_fecha"
+          class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" required>
+      </div>
+  
+      <button type="submit"
+        class="w-full bg-red-400 text-white p-3 rounded-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        Actualizar Fecha
+      </button>
+    </form>
+  </div>
+
+  </div>
+
+</body>
+
+</html>

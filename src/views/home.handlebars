@@ -1,0 +1,96 @@
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>
+		Casino Inside
+	</title>
+	<!-- Tailwind CSS -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<style>
+		/* Fuente personalizada desde Google Fonts */
+		@import url('https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap');
+
+		body {
+			font-family: 'SUSE', sans-serif;
+		}
+
+		.content-wrapper {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 20px;
+		}
+
+		.contact-section {
+			background-color: #fff;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			padding: 20px;
+			max-width: 800px;
+			width: 100%;
+			margin: 20px auto;
+		}
+
+		.contact-section h1 {
+			margin-bottom: 20px;
+		}
+
+		.contact-section p {
+			margin-bottom: 20px;
+		}
+
+		.contact-section .form-label {
+			font-weight: bold;
+		}
+
+		.contact-section .btn-primary {
+			background-color: #333;
+			border-color: #333;
+		}
+
+		.contact-section .btn-primary:hover {
+			background-color: #555;
+			border-color: #555;
+		}
+	</style>
+</head>
+
+<body class="bg-gray-100">
+	<div class="content-wrapper">
+		<section class="w-full py-44 pb-25 mx-auto lg:max-w-7xl text-center">
+			<h1 class="text-black text-5xl font-bold flex flex-row gap-x-4 pb-10 justify-center">
+				Casino <span class="text-red-400">Inside</span>
+			</h1>
+			<h2 class="text-center text-2xl lg:w-[820px] opacity-80 mx-auto">
+				Este es el portal <span class="text-red-300">Administrativo</span> del Casino.
+				Una herramienta centralizada y diseñada para facilitar la <span class="text-red-300">gestión y consulta</span>
+				de información clave. A través de este sistema, los trabajadores pueden acceder de
+				manera rápida y segura a datos almacenados en la base de datos, permitiendo una
+				administración <span class="text-red-300">eficiente y organizada </span> de las
+				operaciones diarias.
+			</h2>
+		</section>
+
+
+		<div class="flex justify-center gap-4 py-6">
+			<a href="/infoCas" class="bg-red-300 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+				Información Casino
+			</a>
+			<a href="/infoGam"
+				class="bg-red-300 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-600 transition-colors">
+				Información Juegos
+			</a>
+			<a href="/edit"
+				class="bg-red-300 text-white px-6 py-3 rounded-lg shadow-md hover:bg-yellow-600 transition-colors">
+				Modificaciones
+			</a>
+		</div>
+	</div>
+</body>
+
+
+</html>

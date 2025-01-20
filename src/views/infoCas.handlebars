@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+  <!-- Boton para ir al inicio -->
+  <div class="text-center mt-6">
+    <a href="/"
+      class="px-6 py-3 bg-red-400 text-white rounded-lg hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+      Volver al Inicio
+    </a>
+  </div>
+
+  <div class="container mx-auto p-6">
+    <div class="bg-white p-8 rounded-lg shadow-lg">
+      <h1 class="text-3xl font-bold text-center text-red-400">{{title}}</h1>
+
+      <div class="mt-6 space-y-6">
+        <!-- Recuadro para balance total -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <button id="showBalanceButton"
+            class="px-6 py-3 bg-red-400 text-white rounded-lg hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 w-full text-lg font-semibold">
+            Mostrar Balance Total
+          </button>
+
+          <div id="balanceContainer" class="mt-4 hidden text-right w-1/2 ml-4">
+            <p class="text-xl text-gray-800">El balance total es: <span
+                class="font-bold text-green-500">{{totalBalance}}</span></p>
+          </div>
+        </div>
+
+        <!-- Formulario para balance de caja -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <form action="/infoCas" method="GET" class="space-y-4">
+            <div class="w-full">
+              <label for="id_caja" class="mb-2 text-lg font-semibold text-gray-700">Ingrese el ID de la caja:</label>
+              <input type="number" id="id_caja" name="id_caja"
+                class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div>
+            <div class="w-full">
+              <button type="submit"
+                class="px-6 py-3 bg-red-400 text-white rounded-lg hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 w-full text-lg font-semibold">
+                Mostrar Balance de Caja
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Mostrar balance de caja -->
+        {{#if balanceCaja}}
+        <div class="bg-white p-4 rounded-lg shadow-lg text-center">
+          <p class="text-xl text-gray-800">El balance de la caja con ID {{id_caja}} es:
+            <span class="font-bold text-green-500">{{balanceCaja}}</span>
+          </p>
+        </div>
+        {{/if}}
+
+        <!-- Error de balance de caja -->
+        {{#if errorBalanceCaja}}
+        <div class="bg-red-100 p-4 rounded-lg text-center">
+          <p class="text-xl text-gray-800">{{errorBalanceCaja}}</p>
+        </div>
+        {{/if}}
+
+        <!-- Recuadro para usuarios vetados -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <button id="showVetadosButton"
+            class="px-6 py-3 bg-red-400 text-white rounded-lg hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 w-full text-lg font-semibold">
+            Mostrar Usuarios Vetados
+          </button>
+
+          <div id="vetadosContainer" class="mt-4 hidden text-right w-1/2 ml-4">
+            <p class="text-xl text-gray-800">La cantidad de usuarios vetados es: <span
+                class="font-bold text-green-500">{{cantidadVetados}}</span></p>
+
+            {{#if usuariosVetados}}
+            <ul class="mt-4 list-disc text-left text-gray-800">
+              {{#each usuariosVetados}}
+              <li>Usuario ID: {{this}}</li>
+              {{/each}}
+            </ul>
+            {{/if}}
+          </div>
+        </div>
+
+        <!-- Formulario para cantidad de dinero de usuario -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <form action="/infoCas" method="GET" class="space-y-4">
+            <div class="w-full">
+              <label for="id_user" class="mb-2 text-lg font-semibold text-gray-700">Ingrese el ID del usuario para ver
+                Dinero:</label>
+              <input type="number" id="id_user" name="id_user"
+                class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div>
+            <div class="w-full">
+              <button type="submit"
+                class="px-6 py-3 bg-red-400 text-white rounded-lg hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 w-full text-lg font-semibold">
+                Mostrar Cantidad de Dinero del Usuario
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Mostrar cantidad de dinero de usuario -->
+        {{#if cantidadDineroUsuario}}
+        <div class="bg-white p-4 rounded-lg shadow-lg text-center">
+          <p class="text-xl text-gray-800">La cantidad de dinero del usuario con ID {{id_user}} es:
+            <span class="font-bold text-green-500">{{cantidadDineroUsuario}}</span>
+          </p>
+        </div>
+        {{/if}}
+
+        <!-- Error de cantidad de dinero de usuario -->
+        {{#if errorCantidadDineroUsuario}}
+        <div class="bg-red-100 p-4 rounded-lg text-center">
+          <p class="text-xl text-gray-800">{{errorCantidadDineroUsuario}}</p>
+        </div>
+        {{/if}}
+
+        <!-- Formulario para mostrar horas activas -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <form action="/infoCas" method="GET" class="space-y-4">
+            <div class="w-full">
+              <label for="id_user_activas" class="mb-2 text-lg font-semibold text-gray-700">Ingrese el ID del usuario
+                para ver las Horas Activas:</label>
+              <input type="number" id="id_user_activas" name="id_user_activas"
+                class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" />
+            </div>
+            <div class="w-full">
+              <button type="submit"
+                class="px-6 py-3 bg-red-400 text-white rounded-lg hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 w-full text-lg font-semibold">
+                Mostrar Horas Activas del Usuario
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Mostrar horas activas -->
+        {{#if horasActivasUsuario}}
+        <div class="bg-white p-4 rounded-lg shadow-lg text-center">
+          <p class="text-xl text-gray-800">El usuario con ID {{id_user_activas}} ha acumulado un total de:
+            <span class="font-bold text-green-500">{{horasActivasUsuario}} horas</span>
+          </p>
+        </div>
+        {{/if}}
+
+        <!-- Error de horas activas -->
+        {{#if errorHorasActivasUsuario}}
+        <div class="bg-red-100 p-4 rounded-lg text-center">
+          <p class="text-xl text-gray-800">{{errorHorasActivasUsuario}}</p>
+        </div>
+        {{/if}}
+
+        <!-- Mostrar horas activas de usuarios -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <button id="showHorasActivasButton"
+            class="px-6 py-3 bg-red-400 text-white rounded-lg hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 w-full text-lg font-semibold">
+            Mostrar Horas Activas de Usuarios
+          </button>
+
+          <div id="horasActivasContainer" class="mt-4 hidden text-right w-1/2 ml-4">
+            <p class="text-xl text-gray-800">Lista de usuarios con sus horas activas:</p>
+            {{#if horasActivas}}
+            <ul class="mt-4 list-disc text-left text-gray-800">
+              {{#each horasActivas}}
+              <li>Usuario ID: {{this.id_user}} - Horas Activas: {{this.horas_totales}}</li>
+              {{/each}}
+            </ul>
+            {{/if}}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('showBalanceButton').addEventListener('click', () => {
+      const balanceContainer = document.getElementById('balanceContainer');
+      balanceContainer.classList.toggle('hidden');
+    });
+
+    document.getElementById('showVetadosButton').addEventListener('click', () => {
+      const vetadosContainer = document.getElementById('vetadosContainer');
+      vetadosContainer.classList.toggle('hidden');
+    });
+
+    document.getElementById('showHorasActivasButton').addEventListener('click', () => {
+      const horasActivasContainer = document.getElementById('horasActivasContainer');
+      horasActivasContainer.classList.toggle('hidden');
+    });
+  </script>
+
+</body>
+
+</html>
