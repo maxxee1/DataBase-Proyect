@@ -1,6 +1,138 @@
-/* -------------------- Informacion Casino -------------------- */
+CREATE OR REPLACE FUNCTION ObtenerEventosFuturos()
+RETURNS TABLE(id_evento INT, nombre_evento VARCHAR, fecha_evento TIMESTAMP, id_sala INT, id_crupier INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT Eventos.id_evento, Eventos.nombre_evento, Eventos
+    .fecha_evento, Eventos.id_sala, Eventos.id_crupier
+    FROM Eventos
+    WHERE Eventos.fecha_evento > CURRENT_TIMESTAMP;
+END;
+$$;
 
--- Balance todas las cajas
+
+CREATE OR REPLACE FUNCTION ObtenerProximoEvento()
+RETURNS TABLE(id_evento INT, nombre_evento VARCHAR, fecha_evento TIMESTAMP, id_sala INT, id_crupier INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT *
+    FROM Eventos
+    WHERE Eventos.fecha_evento > CURRENT_TIMESTAMP
+    LIMIT 1;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION ObtenerApuestaMIN (
+    f_id_game INT
+) RETURNS DECIMAL(10,2)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    f_ApuestaMIN DECIMAL(10,2);
+BEGIN
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM Games
+        WHERE id_game = f_id_game
+    ) THEN
+        RAISE EXCEPTION 'El juego con ID % no existe, ingrse una ID valida', f_id_game;
+    END IF;
+
+    SELECT apuesta_min
+    INTO f_ApuestaMIN
+    FROM Games
+    WHERE id_game = f_id_game;
+
+    RETURN f_ApuestaMIN;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION ObtenerDuracionJuego(
+    f_id_game INT
+)
+RETURNS INT
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    f_duracion INT;
+BEGIN
+   
+    IF NOT EXISTS (
+        SELECT 1 FROM Games WHERE id_game = f_id_game
+    ) THEN
+        RAISE EXCEPTION 'El juego con ID % no existe.', f_id_game;
+    END IF;
+
+    SELECT duracion_juego
+    INTO f_duracion
+    FROM Games
+    WHERE id_game = f_id_game;
+
+    RETURN f_duracion;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE editNombreUser (
+    p_id_user INT, 
+    nuevoNombre VARCHAR(17)
+) 
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE users
+    SET nombre = nuevoNombre
+    WHERE id_user = p_id_user;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE nuevoUsuario (
+    p_id_user INT, 
+    p_nombre VARCHAR(100), 
+    p_email VARCHAR(100), 
+    p_cantidad_dinero DECIMAL(15,2)
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO Users (id_user, nombre, email, cantidad_dinero)
+    VALUES (p_id_user, p_nombre, p_email, p_cantidad_dinero);
+END;
+$$;
+
+
+
+CREATE OR REPLACE PROCEDURE agregarEvento (
+    p_id_evento INT, 
+    p_nombre_evento VARCHAR(100), 
+    p_fecha_evento DATE, 
+    p_id_sala INT, 
+    p_id_crupier INT 
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO Eventos (id_evento, nombre_evento, fecha_evento, id_sala, id_crupier)
+    VALUES (p_id_evento, p_nombre_evento, p_fecha_evento, p_id_sala, p_id_crupier);
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE cambiarFechaEvento (
+    p_id_evento INT, 
+    p_nueva_fecha DATE
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE Eventos
+    SET fecha_evento = p_nueva_fecha
+    WHERE id_evento = p_id_evento;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION BalanceTotal()
 RETURNS DECIMAL(15,2)
 LANGUAGE plpgsql
@@ -17,7 +149,6 @@ BEGIN
 END;
 $$;
 
--- Balance de una caja por ID
 CREATE OR REPLACE FUNCTION BalanceCaja(
     f_id_caja INT
 ) RETURNS DECIMAL(15,2)
@@ -44,7 +175,6 @@ BEGIN
 END;
 $$;
 
--- Listar usuarios vetados
 CREATE OR REPLACE FUNCTION UsuariosVetados()
 RETURNS TABLE(id_user INT)
 LANGUAGE plpgsql
@@ -67,7 +197,6 @@ BEGIN
 END;
 $$;
 
---Obtener dinero por ID
 CREATE OR REPLACE FUNCTION ObtenerCantidadDineroUsuario(
     p_id_user INT
 )
@@ -75,39 +204,37 @@ RETURNS DECIMAL(15,2)
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    cantidad_dinero DECIMAL(15,2);
+    cant_dinero DECIMAL(15,2);
 BEGIN
  
     IF NOT EXISTS (
-        SELECT 1 FROM Users WHERE id_user = p_id_user
+        SELECT 1 FROM Users WHERE users.id_user = p_id_user
     ) THEN
         RAISE EXCEPTION 'El usuario con ID % no existe.', p_id_user;
     END IF;
 
     SELECT cantidad_dinero
-    INTO cantidad_dinero
+    INTO cant_dinero
     FROM Users
-    WHERE id_user = p_id_user;
+    WHERE users.id_user = p_id_user;
 
-    RETURN cantidad_dinero;
+    RETURN cant_dinero;
 END;
 $$;
 
--- horas de todos los usuarios
-CREATE OR REPLACE FUNCTION ObtenerHorasActivasPorUsuario()
-RETURNS TABLE(id_user INT, horas_totales INT)
+CREATE OR REPLACE FUNCTION HorasActivas()
+RETURNS TABLE(id_user INT, horas_totales BIGINT)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY
-    SELECT id_user, SUM(horas_activas) AS horas_totales
+    SELECT user_caja.id_user, SUM(horas_activas) AS horas_totales
     FROM User_Caja
-    GROUP BY id_user
+    GROUP BY User_Caja.id_user
     ORDER BY horas_totales DESC;
 END;
 $$;
 
--- horas de usuario por id_user
 CREATE OR REPLACE FUNCTION ObtenerHorasActivasPorUsuarioID(
     p_id_user INT
 )
@@ -119,158 +246,73 @@ DECLARE
 BEGIN
 
     IF NOT EXISTS (
-        SELECT 1 FROM Users WHERE id_user = p_id_user
+        SELECT 1 FROM Users WHERE users.id_user = p_id_user
     ) THEN
         RAISE EXCEPTION 'El usuario con ID % no existe.', p_id_user;
     END IF;
 
-    SELECT COALESCE(SUM(horas_activas),0) INTO horas_totales
+    SELECT SUM(horas_activas) INTO horas_totales
     FROM User_Caja
-    WHERE id_user = p_id_user;
+    WHERE User_Caja.id_user = p_id_user;
+
+ 
+    IF horas_totales IS NULL THEN
+        RETURN 0;
+    END IF;
 
     RETURN horas_totales;
 END;
 $$;
 
---evento mas efectivo
-CREATE OR REPLACE FUNCTION ObtenerEventoConMasJugadoresNuevos()
-RETURNS TABLE(id_evento INT, jugadores_nuevos BIGINT)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    RETURN QUERY
-    SELECT Eventos.id_evento, COUNT(User_Caja.id_user) AS jugadores_nuevos
-    FROM User_Caja
-    JOIN Eventos ON User_Caja.id_user = Eventos.id_user
-    WHERE User_Caja.horas_activas < 24
-    GROUP BY Eventos.id_evento
-    ORDER BY jugadores_nuevos DESC;
-END;
-$$;
+ALTER TABLE Eventos
+DROP COLUMN id_user;
+
+CREATE TABLE IF NOT EXISTS Pertenece_Evento (
+    id_evento INT,
+    id_user INT,
+    PRIMARY KEY (id_evento, id_user),
+    CONSTRAINT fk_evento
+        FOREIGN KEY (id_evento)
+        REFERENCES Eventos(id_evento)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_usuario
+        FOREIGN KEY (id_user)
+        REFERENCES Users(id_user)
+        ON DELETE CASCADE
+);
 
 
 
-/* -------------------- Informacion Juego -------------------- */
+INSERT INTO Pertenece_Evento (id_evento, id_user)
+VALUES (1, 1),
+       (1, 2),
+       (2, 3);
 
--- Todos los eventos futuros
-CREATE OR REPLACE FUNCTION ObtenerEventosFuturos()
-RETURNS TABLE(id_evento INT, nombre_evento VARCHAR, fecha_evento TIMESTAMP, id_sala INT, id_crupier INT)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    RETURN QUERY
-    SELECT Eventos.id_evento, Eventos.nombre_evento, Eventos
-    .fecha_evento, Eventos.id_sala, Eventos.id_crupier
-    FROM Eventos
-    WHERE Eventos.fecha_evento > CURRENT_TIMESTAMP;
-END;
-$$;
 
--- Proximo evento
-CREATE OR REPLACE FUNCTION ObtenerProximoEvento()
-RETURNS TABLE(id_evento INT, nombre_evento VARCHAR, fecha_evento TIMESTAMP, id_sala INT, id_crupier INT, id_user INT)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    RETURN QUERY
-    SELECT *
-    FROM Eventos
-    WHERE Eventos.fecha_evento > CURRENT_TIMESTAMP
-    LIMIT 1;
-END;
-$$;
+SELECT BalanceTotal();
 
--- Apuesta minima de un juego
-CREATE OR REPLACE FUNCTION ObtenerApuestaMIN (
-    f_id_game INT
-) RETURNS DECIMAL(10,2)
-LANGUAGE plpgsql
-AS $$
-DECLARE
-    f_ApuestaMIN DECIMAL(10,2);
-BEGIN
+SELECT BalanceCaja(2);
 
-    IF NOT EXISTS (
-        SELECT 1
-        FROM Games
-        WHERE id_game = f_id_game
-    ) THEN
-        RAISE EXCEPTION 'El juego con ID % no existe.', f_id_game;
-    END IF;
+SELECT * FROM UsuariosVetados();
 
-    SELECT apuesta_min
-    INTO f_ApuestaMIN
-    FROM Games
-    WHERE id_game = f_id_game;
+SELECT ObtenerCantidadDineroUsuario(1);
 
-    RETURN f_ApuestaMIN;
-END;
-$$;
+SELECT * FROM HorasActivas();
 
--- Obtener duracion
-CREATE OR REPLACE FUNCTION ObtenerDuracionJuego(
-    f_id_game INT
-)
-RETURNS INT
-LANGUAGE plpgsql
-AS $$
-DECLARE
-    duracion INT;
-BEGIN
-   
-    IF NOT EXISTS (
-        SELECT 1 FROM Games WHERE id_game = p_id_game
-    ) THEN
-        RAISE EXCEPTION 'El juego con ID % no existe.', p_id_game;
-    END IF;
+SELECT ObtenerHorasActivasPorUsuarioID(1);
 
-    SELECT duracion_juego
-    INTO duracion
-    FROM Games
-    WHERE id_game = p_id_game;
+CALL nuevoUsuario(9, 'Ana Pérez', 'ana@example.com', 2500.00);
 
-    RETURN duracion;
-END;
-$$;
+CALL editNombreUser(1, 'Juan Pérez Actualizado');
 
--- Evento mas exitoso
-CREATE OR REPLACE FUNCTION ObtenerEventoConMasParticipantes()
-RETURNS TABLE(id_evento INT, participantes INT)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    RETURN QUERY
-    SELECT id_evento, COUNT(id_user) AS participantes
-    FROM Eventos
-    GROUP BY id_evento
-    ORDER BY participantes DESC
-    LIMIT 1;
-END;
-$$;
+CALL agregarEvento(9, 'Torneo de Ruleta', '2024-12-01', 1, 2, 1);
 
--- participantes por evento
-CREATE OR REPLACE FUNCTION ObtenerParticipantesPorEvento(
-    p_id_evento INT
-)
-RETURNS INT
-LANGUAGE plpgsql
-AS $$
-DECLARE
-    cantidad_participantes INT;
-BEGIN
+CALL cambiarFechaEvento(1, '2025-12-01');
 
-    IF NOT EXISTS (
-        SELECT 1 FROM Eventos WHERE id_evento = p_id_evento
-    ) THEN
-        RAISE EXCEPTION 'El evento con ID % no existe.', p_id_evento;
-    END IF;
+SELECT * FROM ObtenerEventosFuturos();
 
-    SELECT COUNT(id_user) INTO cantidad_participantes
-    FROM Eventos
-    WHERE id_evento = p_id_evento;
+SELECT * FROM ObtenerProximoEvento();
 
-    RETURN cantidad_participantes;
-END;
-$$;
+SELECT ObtenerApuestaMIN(1);
 
-/* -------------------- Modificaciones -------------------- */
+SELECT ObtenerDuracionJuego(1);
