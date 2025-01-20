@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+  <!-- Botón para volver al inicio -->
+  <div class="text-center mt-6">
+    <a href="/"
+      class="px-6 py-3 bg-red-400 text-white rounded-lg hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+      Volver al Inicio
+    </a>
+  </div>
+
+  <div class="container mx-auto p-6">
+    <div class="bg-white p-8 rounded-lg shadow-lg">
+      <h1 class="text-3xl font-bold text-center text-red-300">{{title}}</h1>
+
+      <!-- Botón y sección para mostrar eventos futuros -->
+      <button id="showEventosFuturosButton"
+        class="px-4 py-2 bg-red-300 text-white rounded-lg hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 mt-4">
+        Mostrar Eventos Futuros
+      </button>
+      <div id="eventosFuturosContainer" class="mt-6 hidden">
+        {{#if eventosFuturos}}
+        <h2 class="text-2xl font-semibold text-gray-700">Eventos Futuros</h2>
+        <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-4">
+          <thead>
+            <tr class="bg-gray-200">
+              <th class="py-2 px-4 border-b">ID Evento</th>
+              <th class="py-2 px-4 border-b">Nombre Evento</th>
+              <th class="py-2 px-4 border-b">Fecha Evento</th>
+              <th class="py-2 px-4 border-b">ID Sala</th>
+              <th class="py-2 px-4 border-b">ID Crupier</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each eventosFuturos}}
+            <tr>
+              <td class="py-2 px-4 border-b">{{this.id_evento}}</td>
+              <td class="py-2 px-4 border-b">{{this.nombre_evento}}</td>
+              <td class="py-2 px-4 border-b">{{this.fecha_evento}}</td>
+              <td class="py-2 px-4 border-b">{{this.id_sala}}</td>
+              <td class="py-2 px-4 border-b">{{this.id_crupier}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        {{else}}
+        <p class="text-center text-xl text-gray-800">No hay eventos futuros disponibles.</p>
+        {{/if}}
+      </div>
+
+      <!-- Botón y sección para mostrar el próximo evento -->
+      <button id="showProximoEventoButton"
+        class="px-4 py-2 bg-red-300 text-white rounded-lg hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 mt-4">
+        Mostrar Próximo Evento
+      </button>
+      <div id="proximoEventoContainer" class="mt-6 hidden">
+        {{#if proximoEvento}}
+        <h2 class="text-2xl font-semibold text-gray-700">Próximo Evento</h2>
+        <div class="bg-white p-6 rounded-lg shadow-lg mt-4">
+          <p class="text-gray-800">
+            <strong>Nombre del Evento:</strong> {{proximoEvento.nombre_evento}} <br>
+            <strong>Fecha del Evento:</strong> {{proximoEvento.fecha_evento}} <br>
+            <strong>ID Sala:</strong> {{proximoEvento.id_sala}} <br>
+            <strong>ID Crupier:</strong> {{proximoEvento.id_crupier}}
+          </p>
+        </div>
+        {{else}}
+        <p class="text-center text-xl text-gray-800">No hay un próximo evento disponible.</p>
+        {{/if}}
+      </div>
+
+      <!-- Formulario y botón para obtener la apuesta mínima -->
+      <div class="mt-6">
+        <label for="id_apuesta" class="block text-xl font-semibold text-gray-700">ID del Juego para Apuesta
+          Mínima</label>
+        <input type="number" id="id_apuesta" name="id_apuesta" class="mt-2 p-2 border border-gray-300 rounded-lg"
+          placeholder="ID del juego" required />
+        <button id="showApuestaMINButton"
+          class="px-4 py-2 bg-red-300 text-white rounded-lg hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 mt-4">
+          Obtener Apuesta Mínima
+        </button>
+        {{#if apuestaMIN}}
+        <p class="mt-4 text-green-500">La apuesta mínima es: {{apuestaMIN}} EUR</p>
+        {{else if errorApuesta}}
+        <p class="mt-4 text-red-500">{{errorApuesta}}</p>
+        {{/if}}
+      </div>
+
+      <!-- Formulario y botón para obtener la duración del juego -->
+      <div class="mt-6">
+        <label for="id_duracion" class="block text-xl font-semibold text-gray-700">ID del Juego para Duración</label>
+        <input type="number" id="id_duracion" name="id_duracion" class="mt-2 p-2 border border-gray-300 rounded-lg"
+          placeholder="ID del juego" required />
+        <button id="showDuracionButton"
+          class="px-4 py-2 bg-red-300 text-white rounded-lg hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 mt-4">
+          Obtener Duración del Juego
+        </button>
+        {{#if duracionJuego}}
+        <p class="mt-4 text-green-500">La duración del juego es: {{duracionJuego}} minutos</p>
+        {{else if errorDuracion}}
+        <p class="mt-4 text-red-500">{{errorDuracion}}</p>
+        {{/if}}
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  document.getElementById('showEventosFuturosButton').addEventListener('click', () => {
+    const container = document.getElementById('eventosFuturosContainer');
+    container.classList.toggle('hidden');
+  });
+
+  document.getElementById('showProximoEventoButton').addEventListener('click', () => {
+    const container = document.getElementById('proximoEventoContainer');
+    container.classList.toggle('hidden');
+  });
+
+  document.getElementById('showApuestaMINButton').addEventListener('click', () => {
+    const idApuesta = document.getElementById('id_apuesta').value;
+    if (!idApuesta) {
+      alert('Por favor, ingrese un ID válido para la apuesta mínima.');
+      return;
+    }
+    window.location.href = `/infoGam?id_apuesta=${idApuesta}`;
+  });
+
+  document.getElementById('showDuracionButton').addEventListener('click', () => {
+    const idDuracion = document.getElementById('id_duracion').value;
+    if (!idDuracion) {
+      alert('Por favor, ingrese un ID válido para la duración del juego.');
+      return;
+    }
+    window.location.href = `/infoGam?id_duracion=${idDuracion}`;
+  });
+
+</script>
+
+
+</body>
+
+</html>
